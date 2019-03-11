@@ -127,10 +127,11 @@ function createShoe() {
 
 function createRaffles() {
 
+    //creamos filtros perdon por codigo duplicado, not time
     for (let element of filterRaffles) {
         let countryElement = element[1].country;
-        let purchaseElement= element[1].purchase;
-        let collectionElement= element[1].collection;
+        let purchaseElement = element[1].purchase;
+        let collectionElement = element[1].collection;
         var arrayDeStringC = countryElement.split(",");
         for (var string of arrayDeStringC) {
             if (filters.indexOf(string) < 0) {
@@ -153,7 +154,7 @@ function createRaffles() {
             }
         }
 
-
+//aqui empezamos a crear los elementos
         var div = document.createElement("div");
         div.setAttribute("class", "col-md-2");
         var image = document.createElement("image");
@@ -188,6 +189,7 @@ function createRaffles() {
         closes.innerHTML = "closes -" + element[1].Closes + "<br>";
         div.appendChild(closes);
 
+        //funcion pa crear botones
         createButton(element[1].Opens, div, element[1].Closes, element[0]);
 
         let localStoragedVar = window.localStorage.getItem(element[0]);
@@ -206,6 +208,8 @@ function createRaffles() {
         let value = " markAsEntered(true," + valueOfElement + ")";
         MarkedElement.setAttribute("onclick", value);
     }
+
+    //alfinal creamos los filtros
     createFilter();
 }
 
@@ -231,7 +235,7 @@ function createButton(Opened, div, closes, whoMarks) {
     div.appendChild(linechange);
 }
 
-//function MArk As entered
+//function Click del boton y el a para ver si han entrado y localstorage
 
 function markAsEntered(fromMarker, whoMarks) {
     console.log("Entro arriba");
@@ -264,9 +268,9 @@ function createFilter() {
     for (let filter of filters) {
         var button = document.createElement("button");
         button.innerHTML = filter;
-        button.setAttribute("id",filter);
+        button.setAttribute("id", filter);
         button.setAttribute("style", "background-color: white;")
-        button.setAttribute("onclick","clickedFilter("+filter+")");
+        button.setAttribute("onclick", "clickedFilter(" + filter + ")");
         div.appendChild(button);
     }
     filterDiv.appendChild(div);
@@ -274,43 +278,44 @@ function createFilter() {
 
 
 //funcion cuando se clican los filtros
-function clickedFilter(filter){
+function clickedFilter(filter) {
 
     let filteredId = document.getElementById(+filter);
-   if(filter.innerText == "all" || filtersChoosen.indexOf(filter.innerText) >= 0 ){
-       filteredId.setAttribute("style", "background-color: white;");
-       filterRaffles.slice(filtersChoosen.indexOf(filter.innerText)-1,filtersChoosen.indexOf(filter.innerText));
-       if( filter.innerText == "all"){
-           filtersChoosen = [];
-           let filterDiv = document.getElementById("filter");
-           while (filterDiv.firstChild) {
-               filterDiv.removeChild(filterDiv.firstChild);
-           }
-           createFilter();
 
-           filterRaffles = Object.entries(raffles);
-           createRaffles();
+    //si cumple alguno de estos se limpia y se vuelve a crear
+    if (filter.innerText == "all" || filtersChoosen.indexOf(filter.innerText) >= 0) {
+        filteredId.setAttribute("style", "background-color: white;");
+        filterRaffles.slice(filtersChoosen.indexOf(filter.innerText) - 1, filtersChoosen.indexOf(filter.innerText));
+        if (filter.innerText == "all") {
+            filtersChoosen = [];
+            let filterDiv = document.getElementById("filter");
+            while (filterDiv.firstChild) {
+                filterDiv.removeChild(filterDiv.firstChild);
+            }
+            createFilter();
+            filterRaffles = Object.entries(raffles);
+            createRaffles();
+        }
+    } else {
+        //si no esta arriba, se añade a la lista, se pinta de verde y se repintan todos los raffles
+        filtersChoosen.push(filter.innerText);
+        filteredId.setAttribute("style", "background-color: green;");
+        let pushedRaffle = [];
 
-       }
-   }else{
-       filtersChoosen.push(filter.innerText);
-       filteredId.setAttribute("style", "background-color: green;");
-       let pushedRaffle = [];
-
-       for (let raffle of Object.entries(raffles)){
-           if(raffle[1].country == filter.innerText ||raffle[1].purchase == filter.innerText || raffle[1].collection == filter.innerText){
+        for (let raffle of Object.entries(raffles)) {
+            if (raffle[1].country == filter.innerText || raffle[1].purchase == filter.innerText || raffle[1].collection == filter.innerText) {
                 pushedRaffle.push(raffle);
-           }
-       }
+            }
+        }
 
-       for (let raffle of pushedRaffle){
-           if(filterRaffles.indexOf(raffle) <0){
-               filterRaffles.push(raffle);
-           }
-       }
+        for (let raffle of pushedRaffle) {
+            if (filterRaffles.indexOf(raffle) < 0) {
+                filterRaffles.push(raffle);
+            }
+        }
+    }
 
-
-   }
+    //borramos todo y recreamos again
     while (raffleBox.firstChild) {
         raffleBox.removeChild(raffleBox.firstChild);
     }
