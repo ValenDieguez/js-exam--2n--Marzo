@@ -95,7 +95,7 @@ var raffleBox = document.getElementById("Raffles");
 var markEnteredString = "Mark as entered *";
 var linechange = document.createElement("br");
 var filterRaffles = [];
-var filters = ["all","post", "collect","raffle","FCFS", "In-Store"];
+var filters = ["all", "post", "collect", "raffle", "FCFS", "In-Store"];
 
 //functions
 
@@ -127,15 +127,15 @@ function createShoe() {
 function createRaffles() {
 
     for (let element of Object.entries(raffles)) {
-       let countryElement= element[1].country;
+        let countryElement = element[1].country;
         var arrayDeString = countryElement.split(",");
-        for(var string of arrayDeString){
-            if(filters.indexOf(string) < 0){
+        for (var string of arrayDeString) {
+            if (filters.indexOf(string) < 0) {
                 filters.push(string);
             }
         }
 
-        console.log("filters : "+ filters);
+
         var div = document.createElement("div");
         div.setAttribute("class", "col-md-2");
         var image = document.createElement("image");
@@ -184,62 +184,70 @@ function createRaffles() {
         div.appendChild(markEntered);
         raffleBox.appendChild(div);
         let MarkedElement = document.getElementById("marked");
-        let valueOfElement= element[0].toString();
-        let value=" markAsEntered(true," +valueOfElement+ ")";
-        MarkedElement.setAttribute("onclick",value );
+        let valueOfElement = element[0].toString();
+        let value = " markAsEntered(true," + valueOfElement + ")";
+        MarkedElement.setAttribute("onclick", value);
     }
+    createFilter();
+}
 
 //function que crea el button
-    function createButton(Opened, div, closes, whoMarks) {
-        console.log(Opened);
-        var button = document.createElement("button");
-        if (closes == "closed") {
-            button.innerHTML = "CLOSED";
-            button.setAttribute("style", "background-color: red;")
-        } else {
-            if (Opened == "live") {
-                button.innerHTML = "ENTER RAFFLE";
-                let value ="markAsEntered(false," + whoMarks.toString() + ")";
-                button.setAttribute("style", "background-color: green;");
-                button.setAttribute("onclick", value);
+function createButton(Opened, div, closes, whoMarks) {
+    var button = document.createElement("button");
+    if (closes == "closed") {
+        button.innerHTML = "CLOSED";
+        button.setAttribute("style", "background-color: red;")
+    } else {
+        if (Opened == "live") {
+            button.innerHTML = "ENTER RAFFLE";
+            let value = "markAsEntered(false," + whoMarks.toString() + ")";
+            button.setAttribute("style", "background-color: green;");
+            button.setAttribute("onclick", value);
 
-            } else if (Opened == "announced") {
-                button.innerHTML = "ANNOUNCED";
-                button.setAttribute("style", "background-color: yellow;")
-            }
+        } else if (Opened == "announced") {
+            button.innerHTML = "ANNOUNCED";
+            button.setAttribute("style", "background-color: yellow;")
         }
-        div.appendChild(button);
-        div.appendChild(linechange);
     }
+    div.appendChild(button);
+    div.appendChild(linechange);
+}
 
 //function MArk As entered
 
-    function markAsEntered(fromMarker, whoMarks) {
-        console.log("Entro arriba");
-        let marked = document.getElementById("marked");
-        if (window.loaded) {
-            console.log("Entro window");
-            if (marked.innerText == "Mark as entered *") {
-                console.log("Entro entro dentro if");
-                window.localStorage.setItem(whoMarks.toString(), 'Entered');
-                marked.innerHTML = "Entered"
-            } else {
-                console.log("Entro entro dentro else");
+function markAsEntered(fromMarker, whoMarks) {
+    console.log("Entro arriba");
+    let marked = document.getElementById("marked");
+    if (window.loaded) {
+        console.log("Entro window");
+        if (marked.innerText == "Mark as entered *") {
+            console.log("Entro entro dentro if");
+            window.localStorage.setItem(whoMarks.toString(), 'Entered');
+            marked.innerHTML = "Entered"
+        } else {
+            console.log("Entro entro dentro else");
 
-                if (fromMarker) {
+            if (fromMarker) {
 
-                    console.log("Entro entro dentro else i if");
+                console.log("Entro entro dentro else i if");
 
-                    window.localStorage.setItem(whoMarks.toString(), 'Mark as entered *');
-                    marked.innerHTML = "Mark as entered *"
-                }
+                window.localStorage.setItem(whoMarks.toString(), 'Mark as entered *');
+                marked.innerHTML = "Mark as entered *"
             }
         }
     }
+}
 
-    function createFilter(){
-
+function createFilter() {
+    let filterDiv = document.getElementById("filter");
+    var div = document.createElement("div");
+    div.setAttribute("class", "col-md-10");
+    for (let filter of filters) {
+        var button = document.createElement("button");
+        button.innerHTML = filter;
+        div.appendChild(button);
     }
+    filterDiv.appendChild(div);
 }
 
 createShoe();
