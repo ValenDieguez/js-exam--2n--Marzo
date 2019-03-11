@@ -190,12 +190,12 @@ function createRaffles() {
         div.appendChild(closes);
 
         //funcion pa crear botones
-        createButton(element[1].Opens, div, element[1].Closes, element[0]);
+        createButton(element[1].Opens, div, element[1].Closes, element[0], element);
 
         let localStoragedVar = window.localStorage.getItem(element[0]);
 
         var markEntered = document.createElement("a");
-        markEntered.setAttribute("id", "marked");
+        markEntered.setAttribute("id", "mar"+element[0]);
         if (localStoragedVar !== "" && localStoragedVar !== null) {
             markEntered.innerHTML = localStoragedVar;
         } else {
@@ -203,9 +203,9 @@ function createRaffles() {
         }
         div.appendChild(markEntered);
         raffleBox.appendChild(div);
-        let MarkedElement = document.getElementById("marked");
+        let MarkedElement = document.getElementById("mar"+element[0]);
         let valueOfElement = element[0].toString();
-        let value = " markAsEntered(true," + valueOfElement.toString() + ")";
+        let value = " markAsEntered(true," + valueOfElement.toString() + ","+"mar"+element[0]+")";
         MarkedElement.setAttribute("onclick", value.toString());
     }
 
@@ -214,7 +214,7 @@ function createRaffles() {
 }
 
 //function que crea el button
-function createButton(Opened, div, closes, whoMarks) {
+function createButton(Opened, div, closes, whoMarks, element) {
     var button = document.createElement("button");
     if (closes == "closed") {
         button.innerHTML = "CLOSED";
@@ -222,7 +222,7 @@ function createButton(Opened, div, closes, whoMarks) {
     } else {
         if (Opened == "live") {
             button.innerHTML = "ENTER RAFFLE";
-            let value = "markAsEntered(false," + whoMarks.toString() + ")";
+            let value = "markAsEntered(false," + whoMarks.toString()  + ","+"mar"+element[0]+")";
             button.setAttribute("style", "background-color: green;");
             button.setAttribute("onclick", value.toString());
 
