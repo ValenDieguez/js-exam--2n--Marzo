@@ -1,4 +1,3 @@
-
 //variables dadas en el raffle.js
 var shoe = {
     "model": "Sacai x Nike LDV Waffle",
@@ -67,7 +66,7 @@ var raffles = {
 
     "SNS": {
         "logo": "https://www.soleretriever.com/wp-content/uploads/2018/04/SNS.jpg",
-        "country": "Swe, UK, Ger, Fr",
+        "country": "Swe,UK, Ger, Fr",
         "purchase": "Online Raffle",
         "collection": "Post and Collect",
         "Sizes": "4 to 13 US",
@@ -77,7 +76,7 @@ var raffles = {
     },
 
     "Solebox": {
-        "logo": "https://www.soleretriever.com/wp-content/uploads/2018/04/SoleBox.jpg'git",
+        "logo": "https://www.soleretriever.com/wp-content/uploads/2018/04/SoleBox.jpg",
         "country": "Germany",
         "purchase": "In-Store/Online",
         "collection": "Post and Collect",
@@ -93,6 +92,10 @@ var raffles = {
 //variables globales necesitadas
 
 var raffleBox = document.getElementById("Raffles");
+var markEnteredString = "Mark as entered *";
+var linechange = document.createElement("br");
+var filterRaffles = [];
+var filters = ["all","post", "collect","raffle","FCFS", "In-Store"];
 
 //functions
 
@@ -112,7 +115,7 @@ function createShoe() {
     div.appendChild(colour);
 
     var otherText = document.createElement("p");
-    otherText.innerHTML = shoe.code + " / "+ shoe.avaliable+" / "+ shoe.price+"<br>";
+    otherText.innerHTML = shoe.code + " / " + shoe.avaliable + " / " + shoe.price + "<br>";
     div.appendChild(otherText);
     textBox.appendChild(div);
 
@@ -121,69 +124,122 @@ function createShoe() {
 
 //function que crea las raffles
 
-function createRaffles(){
-for (let element of Object.entries(raffles) ){
-    var div = document.createElement("div");
-    div.setAttribute("class", "col-md-2");
-    var image = document.createElement("image");
-    image.setAttribute("src",element[1].logo);
-    div.appendChild(image);
+function createRaffles() {
 
-    var title = document.createElement("h6");
-    title.innerHTML = element[0] + "<br>";
-    div.appendChild(title);
+    for (let element of Object.entries(raffles)) {
+       let countryElement= element[1].country;
+        var arrayDeString = countryElement.split(",");
+        for(var string of arrayDeString){
+            if(filters.indexOf(string) < 0){
+                filters.push(string);
+            }
+        }
 
-    var country = document.createElement("p");
-    country.innerHTML = element[1].country + "<br>";
-    div.appendChild(country);
+        console.log("filters : "+ filters);
+        var div = document.createElement("div");
+        div.setAttribute("class", "col-md-2");
+        var image = document.createElement("image");
+        image.setAttribute("src", element[1].logo);
+        div.appendChild(image);
 
-    var purchase = document.createElement("p");
-    purchase.innerHTML = element[1].purchase + "<br>";
-    div.appendChild(purchase);
+        var title = document.createElement("h6");
+        title.innerHTML = element[0] + "<br>";
+        div.appendChild(title);
 
-    var collention = document.createElement("p");
-    collention.innerHTML = element[1].collection + "<br>";
-    div.appendChild(collention);
+        var country = document.createElement("p");
+        country.innerHTML = element[1].country + "<br>";
+        div.appendChild(country);
 
-    var sizes = document.createElement("p");
-    sizes.innerHTML = element[1].sizes + "<br>";
-    div.appendChild(sizes);
+        var purchase = document.createElement("p");
+        purchase.innerHTML = element[1].purchase + "<br>";
+        div.appendChild(purchase);
 
-    var opens = document.createElement("p");
-    opens.innerHTML = "opens -"+element[1].Opens + "<br>";
-    div.appendChild(opens);
+        var collention = document.createElement("p");
+        collention.innerHTML = element[1].collection + "<br>";
+        div.appendChild(collention);
 
-    var closes = document.createElement("p");
-    closes.innerHTML = "closes -"+element[1].Closes + "<br>";
-    div.appendChild(closes);
+        var sizes = document.createElement("p");
+        sizes.innerHTML = element[1].sizes + "<br>";
+        div.appendChild(sizes);
 
+        var opens = document.createElement("p");
+        opens.innerHTML = "opens -" + element[1].Opens + "<br>";
+        div.appendChild(opens);
 
+        var closes = document.createElement("p");
+        closes.innerHTML = "closes -" + element[1].Closes + "<br>";
+        div.appendChild(closes);
 
-    createButton(element[1].Opens,div, element[1].Closes);
+        createButton(element[1].Opens, div, element[1].Closes, element[0]);
 
-    raffleBox.appendChild(div);
-}
+        let localStoragedVar = window.localStorage.getItem(element[0]);
 
-
-function createButton(Opened, div, closes){
-console.log(Opened);
-    var button = document.createElement("button");
-    if(closes == "closed"){
-        button.innerHTML = "CLOSED";
-        button.setAttribute("style", "background-color: red;")
+        var markEntered = document.createElement("a");
+        markEntered.setAttribute("id", "marked");
+        if (localStoragedVar !== "" && localStoragedVar !== null) {
+            markEntered.innerHTML = localStoragedVar;
+        } else {
+            markEntered.innerHTML = markEnteredString + "<br>";
+        }
+        div.appendChild(markEntered);
+        raffleBox.appendChild(div);
+        let MarkedElement = document.getElementById("marked");
+        let valueOfElement= element[0].toString();
+        let value=" markAsEntered(true," +valueOfElement+ ")";
+        MarkedElement.setAttribute("onclick",value );
     }
-    else {
-        if (Opened == "live") {
-            button.innerHTML = "ENTER RAFFLE";
-            button.setAttribute("style", "background-color: green;")
-        } else if (Opened == "announced") {
-            button.innerHTML = "ANNOUNCED";
-            button.setAttribute("style", "background-color: yellow;")
+
+//function que crea el button
+    function createButton(Opened, div, closes, whoMarks) {
+        console.log(Opened);
+        var button = document.createElement("button");
+        if (closes == "closed") {
+            button.innerHTML = "CLOSED";
+            button.setAttribute("style", "background-color: red;")
+        } else {
+            if (Opened == "live") {
+                button.innerHTML = "ENTER RAFFLE";
+                let value ="markAsEntered(false," + whoMarks.toString() + ")";
+                button.setAttribute("style", "background-color: green;");
+                button.setAttribute("onclick", value);
+
+            } else if (Opened == "announced") {
+                button.innerHTML = "ANNOUNCED";
+                button.setAttribute("style", "background-color: yellow;")
+            }
+        }
+        div.appendChild(button);
+        div.appendChild(linechange);
+    }
+
+//function MArk As entered
+
+    function markAsEntered(fromMarker, whoMarks) {
+        console.log("Entro arriba");
+        let marked = document.getElementById("marked");
+        if (window.loaded) {
+            console.log("Entro window");
+            if (marked.innerText == "Mark as entered *") {
+                console.log("Entro entro dentro if");
+                window.localStorage.setItem(whoMarks.toString(), 'Entered');
+                marked.innerHTML = "Entered"
+            } else {
+                console.log("Entro entro dentro else");
+
+                if (fromMarker) {
+
+                    console.log("Entro entro dentro else i if");
+
+                    window.localStorage.setItem(whoMarks.toString(), 'Mark as entered *');
+                    marked.innerHTML = "Mark as entered *"
+                }
+            }
         }
     }
-    div.appendChild(button);
-}
 
+    function createFilter(){
+
+    }
 }
 
 createShoe();
