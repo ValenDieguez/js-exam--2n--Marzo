@@ -92,7 +92,7 @@ var raffles = {
 
 //variables globales necesitadas
 
-
+var raffleBox = document.getElementById("Raffles");
 
 //functions
 
@@ -119,49 +119,75 @@ function createShoe() {
 
 }
 
+//function que crea las raffles
+
 function createRaffles(){
-for (let element of raffles ){
+for (let element of Object.entries(raffles) ){
     var div = document.createElement("div");
     div.setAttribute("class", "col-md-2");
     var image = document.createElement("image");
-    image.setAttribute("src",element.logo);
+    image.setAttribute("src",element[1].logo);
     div.appendChild(image);
 
     var title = document.createElement("h6");
-    title.innerHTML = element.toString() + "<br>";
+    title.innerHTML = element[0] + "<br>";
     div.appendChild(title);
 
     var country = document.createElement("p");
-    country.innerHTML = element.country + "<br>";
+    country.innerHTML = element[1].country + "<br>";
     div.appendChild(country);
 
     var purchase = document.createElement("p");
-    purchase.innerHTML = element.purchase + "<br>";
+    purchase.innerHTML = element[1].purchase + "<br>";
     div.appendChild(purchase);
 
     var collention = document.createElement("p");
-    collention.innerHTML = element.collection + "<br>";
+    collention.innerHTML = element[1].collection + "<br>";
     div.appendChild(collention);
 
     var sizes = document.createElement("p");
-    sizes.innerHTML = element.sizes + "<br>";
+    sizes.innerHTML = element[1].sizes + "<br>";
     div.appendChild(sizes);
 
     var opens = document.createElement("p");
-    opens.innerHTML = "opens -"+element.opens + "<br>";
+    opens.innerHTML = "opens -"+element[1].Opens + "<br>";
     div.appendChild(opens);
 
     var closes = document.createElement("p");
-    closes.innerHTML = "closes -"+element.closes + "<br>";
+    closes.innerHTML = "closes -"+element[1].Closes + "<br>";
     div.appendChild(closes);
 
 
 
+    createButton(element[1].Opens,div, element[1].Closes);
 
-
+    raffleBox.appendChild(div);
 }
+
+
+function createButton(Opened, div, closes){
+console.log(Opened);
+    var button = document.createElement("button");
+    if(closes == "closed"){
+        button.innerHTML = "CLOSED";
+        button.setAttribute("style", "background-color: red;")
+    }
+    else {
+        if (Opened == "live") {
+            button.innerHTML = "ENTER RAFFLE";
+            button.setAttribute("style", "background-color: green;")
+        } else if (Opened == "announced") {
+            button.innerHTML = "ANNOUNCED";
+            button.setAttribute("style", "background-color: yellow;")
+        }
+    }
+    div.appendChild(button);
+}
+
 }
 
 createShoe();
+
+createRaffles();
 
 
