@@ -205,8 +205,8 @@ function createRaffles() {
         raffleBox.appendChild(div);
         let MarkedElement = document.getElementById("marked");
         let valueOfElement = element[0].toString();
-        let value = " markAsEntered(true," + valueOfElement + ")";
-        MarkedElement.setAttribute("onclick", value);
+        let value = " markAsEntered(true," + valueOfElement.toString() + ")";
+        MarkedElement.setAttribute("onclick", value.toString());
     }
 
     //alfinal creamos los filtros
@@ -224,7 +224,7 @@ function createButton(Opened, div, closes, whoMarks) {
             button.innerHTML = "ENTER RAFFLE";
             let value = "markAsEntered(false," + whoMarks.toString() + ")";
             button.setAttribute("style", "background-color: green;");
-            button.setAttribute("onclick", value);
+            button.setAttribute("onclick", value.toString());
 
         } else if (Opened == "announced") {
             button.innerHTML = "ANNOUNCED";
@@ -238,26 +238,17 @@ function createButton(Opened, div, closes, whoMarks) {
 //function Click del boton y el a para ver si han entrado y localstorage
 
 function markAsEntered(fromMarker, whoMarks) {
-    console.log("Entro arriba");
     let marked = document.getElementById("marked");
-    if (window.loaded) {
-        console.log("Entro window");
-        if (marked.innerText == "Mark as entered *") {
-            console.log("Entro entro dentro if");
-            window.localStorage.setItem(whoMarks.toString(), 'Entered');
-            marked.innerHTML = "Entered"
-        } else {
-            console.log("Entro entro dentro else");
-
-            if (fromMarker) {
-
-                console.log("Entro entro dentro else i if");
-
-                window.localStorage.setItem(whoMarks.toString(), 'Mark as entered *');
-                marked.innerHTML = "Mark as entered *"
-            }
+    if (marked.innerText == "Mark as entered *") {
+        window.localStorage.setItem(whoMarks.toString(), 'Entered');
+        marked.innerHTML = "Entered"
+    } else {
+        if (fromMarker) {
+            window.localStorage.setItem(whoMarks.toString(), 'Mark as entered *');
+            marked.innerHTML = "Mark as entered *"
         }
     }
+
 }
 
 //funcion para crear los filtros
@@ -279,8 +270,7 @@ function createFilter() {
 
 //funcion cuando se clican los filtros
 function clickedFilter(filter) {
-
-    let filteredId = document.getElementById(+filter);
+    let filteredId = document.getElementById(filter);
 
     //si cumple alguno de estos se limpia y se vuelve a crear
     if (filter.innerText == "all" || filtersChoosen.indexOf(filter.innerText) >= 0) {
