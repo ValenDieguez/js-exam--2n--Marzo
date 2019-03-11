@@ -94,8 +94,9 @@ var raffles = {
 var raffleBox = document.getElementById("Raffles");
 var markEnteredString = "Mark as entered *";
 var linechange = document.createElement("br");
-var filterRaffles = [];
-var filters = ["all", "post", "collect", "raffle", "FCFS", "In-Store"];
+var filterRaffles = Object.entries(raffles);
+var filtersChoosen = [];
+var filters = ["all"];
 
 //functions
 
@@ -126,11 +127,28 @@ function createShoe() {
 
 function createRaffles() {
 
-    for (let element of Object.entries(raffles)) {
+    for (let element of filterRaffles) {
         let countryElement = element[1].country;
-        var arrayDeString = countryElement.split(",");
-        for (var string of arrayDeString) {
+        let purchaseElement= element[1].purchase;
+        let collectionElement= element[1].collection;
+        var arrayDeStringC = countryElement.split(",");
+        for (var string of arrayDeStringC) {
             if (filters.indexOf(string) < 0) {
+
+                filters.push(string);
+            }
+        }
+        var arrayDeStringP = purchaseElement.split(",");
+        for (var string of arrayDeStringP) {
+            if (filters.indexOf(string) < 0) {
+
+                filters.push(string);
+            }
+        }
+        var arrayDeStringCOL = collectionElement.split(",");
+        for (var string of arrayDeStringCOL) {
+            if (filters.indexOf(string) < 0) {
+
                 filters.push(string);
             }
         }
@@ -238,6 +256,7 @@ function markAsEntered(fromMarker, whoMarks) {
     }
 }
 
+//funcion para crear los filtros
 function createFilter() {
     let filterDiv = document.getElementById("filter");
     var div = document.createElement("div");
@@ -245,9 +264,59 @@ function createFilter() {
     for (let filter of filters) {
         var button = document.createElement("button");
         button.innerHTML = filter;
+        button.setAttribute("id",filter);
+        button.setAttribute("style", "background-color: white;")
+        button.setAttribute("onclick","clickedFilter("+filter+")");
         div.appendChild(button);
     }
     filterDiv.appendChild(div);
+}
+
+
+//funcion cuando se clican los filtros
+function clickedFilter(filter){
+
+    let filteredId = document.getElementById(+filter);
+   if(filter.innerText == "all" || filtersChoosen.indexOf(filter.innerText) >= 0 ){
+       filteredId.setAttribute("style", "background-color: white;");
+       filterRaffles.slice(filtersChoosen.indexOf(filter.innerText)-1,filtersChoosen.indexOf(filter.innerText));
+       if( filter.innerText == "all"){
+           filtersChoosen = [];
+           let filterDiv = document.getElementById("filter");
+           while (filterDiv.firstChild) {
+               filterDiv.removeChild(filterDiv.firstChild);
+           }
+           createFilter();
+
+           filterRaffles = Object.entries(raffles);
+           createRaffles();
+
+       }
+   }else{
+       filtersChoosen.push(filter.innerText);
+       filteredId.setAttribute("style", "background-color: green;");
+       let pushedRaffle = [];
+
+       for (let raffle of Object.entries(raffles)){
+           if(raffle[1].country == filter.innerText ||raffle[1].purchase == filter.innerText || raffle[1].collection == filter.innerText){
+                pushedRaffle.push(raffle);
+           }
+       }
+
+       for (let raffle of pushedRaffle){
+           if(filterRaffles.indexOf(raffle) <0){
+               filterRaffles.push(raffle);
+           }
+       }
+
+
+   }
+    while (raffleBox.firstChild) {
+        raffleBox.removeChild(raffleBox.firstChild);
+    }
+
+    createRaffles();
+
 }
 
 createShoe();
